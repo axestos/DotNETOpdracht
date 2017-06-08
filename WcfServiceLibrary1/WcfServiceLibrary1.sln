@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WcfServiceLibrary1", "WcfServiceLibrary1\WcfServiceLibrary1.csproj", "{B2308737-00CD-4DD3-BE87-8BD3060A37A5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weekopdracht5-6", "WcfServiceLibrary1\Weekopdracht5-6.csproj", "{B2308737-00CD-4DD3-BE87-8BD3060A37A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
