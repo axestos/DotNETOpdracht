@@ -14,7 +14,7 @@ namespace WcfServiceLibrary1
         DBConnect con = new DBConnect();
         public string RegisterUser(string username) {
 
-            if (!con.DoesUserExist(username))
+            if (!con.DoesUserExist(username))//False, user does not exist
             {
                 string password = Reverse(username);
                 con.InsertNewUser(username, password);

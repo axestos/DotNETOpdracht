@@ -1,11 +1,11 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
 
-namespace WcfServiceLibrary1
+namespace DBTest
 {
     class DBConnect
     {
@@ -90,7 +90,7 @@ namespace WcfServiceLibrary1
                 while (reader.Read())
                 {
                     user = reader["username"].ToString();
-
+                    
                 }
 
                 if (user == null)
@@ -109,13 +109,12 @@ namespace WcfServiceLibrary1
             }
 
         }
-
         public bool PasswordCorrect(string username, string password)
         {
             MySqlCommand cmd = connection.CreateCommand();
             cmd.CommandText = "SELECT password FROM user WHERE username = @name "; // Voorkomt SQL injectie!!!!
             cmd.Parameters.AddWithValue("@name", username);
-            
+
             if (OpenConnection())
             {
                 string db_password = null;
@@ -133,7 +132,7 @@ namespace WcfServiceLibrary1
                 {
                     return false;//Password in form is NOT the same as password in database
                 }
-                
+
 
             }
             else
@@ -142,6 +141,5 @@ namespace WcfServiceLibrary1
             }
 
         }
-
     }
 }
