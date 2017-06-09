@@ -12,8 +12,7 @@ namespace WcfServiceLibrary1
 
         /*
          TO DO
-         BuyService(username, user_money) -> Get user_id by name, Check store amount, check balance of user by user_id, check price of product, add to inventory if balance high enough, refresh.
-         RefreshService -> Get store items. Don't show where amount is 0, return List;  
+         BuyService(username, user_money, item) -> Get user_id by name, Check store amount, check balance of user by user_id, check price of product, add to inventory if balance high enough, refresh.
              */
         private MySqlConnection connection;
         private string server;
@@ -49,7 +48,7 @@ namespace WcfServiceLibrary1
                 connection.Open();
                 return true;
             }
-            catch (MySqlException ex)
+            catch (MySqlException)
             {
                 return false;
             }
@@ -69,6 +68,33 @@ namespace WcfServiceLibrary1
             }
         }
 
+
+
+        public int GetUserID(string username)//Returns ID from certain username
+        {
+            int user_id = 0;
+
+            if (OpenConnection())
+            {
+                MySqlCommand cmd = connection.CreateCommand();
+                cmd.CommandText = "SELECT id FROM user WHERE username = @name"; // Voorkomt SQL injectie!!!!
+                cmd.Parameters.AddWithValue("@name", username);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    user_id = (int)reader["id"];
+                }
+
+                return user_id;//filled up or empty if none found
+
+            }
+            else
+            {
+                return user_id;//empty
+            }
+
+        }
+
         public void InsertNewUser(string username, string password)//Insert new user
         {
             if (OpenConnection())
@@ -78,6 +104,12 @@ namespace WcfServiceLibrary1
                 cmd.Parameters.AddWithValue("@name", username);
                 cmd.Parameters.AddWithValue("@password", password);
                 cmd.ExecuteNonQuery();//Execute query
+
+                //Makes inventory for user
+                MySqlCommand user = connection.CreateCommand();
+                user.CommandText = "INSERT INTO inventory(user_id) VALUES(@user_id) ";
+                user.Parameters.AddWithValue("@user_id", GetUserID(username));
+                user.ExecuteNonQuery();
                 CloseConnection();
             }
         }
@@ -106,6 +138,35 @@ namespace WcfServiceLibrary1
             {
                 return storeStock;//empty
             }
+        }
+
+        public List<Item> getInventoryItems(int user_id)
+        {
+            List<Item> userInventory = new List<Item>();
+            MySqlCommand cmd = connection.CreateCommand();
+            cmd.CommandText = "SELECT item.item_name, inventory_item.amount from item, inventory_item " +
+                                "LEFT JOIN inventory ON inventory.id = inventory_item.inventory_id " +
+                                "LEFT JOIN user ON user.id = inventory.user_id"+
+                                "WHERE inventory.user_id = @user_id";
+            cmd.Parameters.AddWithValue("@user_id", user_id);
+            if (OpenConnection())
+            {
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    string itemname = reader["item_name"].ToString();
+                    int amount = (int)reader["amount"];
+                    userInventory.Add(new Item(itemname, amount));
+                }
+
+                return userInventory;//filled up or empty if none found
+
+            }
+            else
+            {
+                return userInventory;//empty
+            }
+
         }
 
         //UserExist statement
@@ -170,6 +231,32 @@ namespace WcfServiceLibrary1
             else
             {
                 return false;
+            }
+
+        }
+
+        public float UserBalance(string username)
+        {
+            MySqlCommand cmd = connection.CreateCommand();
+            cmd.CommandText = "SELECT balance FROM user WHERE username = @name"; 
+            cmd.Parameters.AddWithValue("@name", username);
+            float balance = 0;
+
+            if (OpenConnection())
+            {
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    balance = (float)reader["balance"];
+                }
+
+                return balance;
+
+
+            }
+            else
+            {
+                return balance;
             }
 
         }

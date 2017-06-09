@@ -18,5 +18,11 @@ namespace WcfServiceLibrary1
             this.price = price;
         }
 
+        public Item(string itemname, int amount)
+        {
+            this.itemname = itemname;
+            this.amount = amount;
+        }
+
     }
 }

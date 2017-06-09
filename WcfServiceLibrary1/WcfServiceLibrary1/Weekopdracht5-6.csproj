@@ -46,14 +46,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DBConnect.cs" />
+    <Compile Include="GetUserBalanceService.cs" />
+    <Compile Include="IGetUserBalanceService.cs" />
     <Compile Include="ILogInService.cs" />
     <Compile Include="IRefreshService.cs" />
     <Compile Include="IRegisterService.cs" />
     <Compile Include="Item.cs" />
+    <Compile Include="IUserInventoryService.cs" />
     <Compile Include="LogInService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RefreshService.cs" />
     <Compile Include="RegisterService.cs" />
+    <Compile Include="UserInventoryService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
