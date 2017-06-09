@@ -109,8 +109,36 @@ namespace DBTest
             }
 
         }
-        public bool PasswordCorrect(string username, string password)
+
+        public List<Item> getStoreItems()
         {
+            List<Item> storeStock = new List<Item>();
+            MySqlCommand cmd = connection.CreateCommand();
+            cmd.CommandText = "SELECT shop.item_amount, item.item_name, item.price FROM shop INNER JOIN item ON shop.item_id=item.id WHERE shop.item_amount > 0 ";
+            if (OpenConnection())
+            {
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    string itemname = reader["item_name"].ToString();
+                    int amount = (int)reader["item_amount"];
+                    float price = (float)reader["price"];
+                    storeStock.Add(new Item(itemname, amount, price));
+                    Console.Write(itemname + " " + amount + " " + price); 
+
+                }
+
+                return storeStock;//filled up or empty if none found
+
+            }
+            else
+            {
+                return storeStock;//empty
+            }
+        }
+
+            public bool PasswordCorrect(string username, string password)
+            {
             MySqlCommand cmd = connection.CreateCommand();
             cmd.CommandText = "SELECT password FROM user WHERE username = @name "; // Voorkomt SQL injectie!!!!
             cmd.Parameters.AddWithValue("@name", username);

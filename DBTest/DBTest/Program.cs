@@ -10,10 +10,16 @@ namespace DBTest
     {
         static void Main(string[] args)
         {
-
+            
             DBConnect con = new DBConnect();
-            Console.Write(con.PasswordCorrect("Kevin", "Nivek"));
+            con.getStoreItems();
             Console.ReadLine();
+        }
+        private static string Reverse(string username)
+        {
+            char[] charArray = username.ToCharArray();
+            Array.Reverse(charArray);
+            return new string(charArray);
         }
     }
 }

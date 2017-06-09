@@ -9,6 +9,12 @@ namespace WcfServiceLibrary1
 {
     class DBConnect
     {
+
+        /*
+         TO DO
+         BuyService(username, user_money) -> Get user_id by name, Check store amount, check balance of user by user_id, check price of product, add to inventory if balance high enough, refresh.
+         RefreshService -> Get store items. Don't show where amount is 0, return List;  
+             */
         private MySqlConnection connection;
         private string server;
         private string database;
@@ -45,7 +51,6 @@ namespace WcfServiceLibrary1
             }
             catch (MySqlException ex)
             {
-                Console.WriteLine(ex);
                 return false;
             }
         }
@@ -64,7 +69,7 @@ namespace WcfServiceLibrary1
             }
         }
 
-        public void InsertNewUser(string username, string password)//Insert,update,delete
+        public void InsertNewUser(string username, string password)//Insert new user
         {
             if (OpenConnection())
             {
@@ -77,11 +82,37 @@ namespace WcfServiceLibrary1
             }
         }
 
+
+        public List<Item> getStoreItems()
+        {
+            List<Item> storeStock = new List<Item>();
+            MySqlCommand cmd = connection.CreateCommand();
+            cmd.CommandText = "SELECT shop.item_amount, item.item_name, item.price FROM shop INNER JOIN item ON shop.item_id=item.id WHERE shop.item_amount > 0 ";
+            if (OpenConnection())
+            {
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    string itemname = reader["item_name"].ToString();
+                    int amount = (int)reader["item_amount"];
+                    float price = (float)reader["price"];
+                    storeStock.Add(new Item(itemname, amount, price));
+                }
+
+                return storeStock;//filled up or empty if none found
+
+            }
+            else
+            {
+                return storeStock;//empty
+            }
+        }
+
         //UserExist statement
         public bool DoesUserExist(string username)
         {
             MySqlCommand cmd = connection.CreateCommand();
-            cmd.CommandText = "SELECT username from user WHERE username = @name "; // Voorkomt SQL injectie!!!!
+            cmd.CommandText = "SELECT username from user WHERE username = @name ";
             cmd.Parameters.AddWithValue("@name", username);
             if (OpenConnection())
             {
@@ -105,7 +136,7 @@ namespace WcfServiceLibrary1
             }
             else
             {
-                return true;
+                return true;//Omdat er iets moet returnen
             }
 
         }
