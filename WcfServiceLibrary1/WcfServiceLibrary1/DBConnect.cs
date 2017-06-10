@@ -10,10 +10,6 @@ namespace WcfServiceLibrary1
     class DBConnect
     {
 
-        /*
-         TO DO
-         BuyService(username, user_money, item) -> Get user_id by name(possible), Check store amount, check balance of user by user_id(possible), check price of product, add to inventory if balance high enough, refresh.
-             */
         private MySqlConnection connection;
         private string server;
         private string database;
@@ -69,6 +65,222 @@ namespace WcfServiceLibrary1
         }
 
 
+        /*
+         TO DO
+         BuyService(username, user_money, item) -> Get user_id by name(possible), Check store amount, check balance of user by user_id(possible), check price of product, add to inventory if balance high enough, refresh.
+             */
+
+        //if this one is called, also call the refresh and GetUserInventoryServices to reset both fields
+        public bool BuyItem(string username, string item_name)//need testing
+        {
+            int item_id = GetItemId(item_name);
+            float user_balance = UserBalance(username);
+            float item_price = GetItemPrice(item_name);
+            int item_amount = GetItemAmount(item_id);
+            int user_id = GetUserID(username);
+            int inventory_id = GetInventoryID(user_id);
+            bool itemInInventory = IsItemInInventory(item_id, inventory_id);
+            int item_amountInventory = ItemAmountInInventory(item_id, inventory_id);
+
+            //check if inventory item is already existant. If true amount +1, If false new Row with item.
+
+            if (item_amount > 0)//Is the item sold out?
+            {
+                if(item_price <= user_balance)//Can the user pay for the item?
+                {
+                    int new_item_amount = item_amount--;
+                    float new_user_balance = user_balance - item_price;
+                    SetNewStoreAmount(item_id, new_item_amount);//Sets new item amount in store
+                    SetNewUserBalance(user_id, new_user_balance);//Sets new userbalance
+                    
+                    if (OpenConnection()) {
+                        if (itemInInventory)//Item is already in the inventory, amount + 1
+                        {
+                            int new_item_inventory_amount = item_amountInventory++;
+                            MySqlCommand cmd = connection.CreateCommand();
+                            cmd.CommandText = "UPDATE inventory_item SET amount = @amount WHERE item_id = @id "; // Voorkomt SQL injectie!!!!
+                            cmd.Parameters.AddWithValue("@amount", new_item_inventory_amount);
+                            cmd.Parameters.AddWithValue("@id", item_id);
+                            cmd.ExecuteNonQuery();//Execute query
+                            CloseConnection();
+                        }
+
+                        else//Item is not in the inventory
+                        {
+                            MySqlCommand cmd = connection.CreateCommand();
+                            cmd.CommandText = "INSERT INTO inventory_item(amount,inventory_id,item_id) VALUES(1,@inv_id,@item_id)"; // Voorkomt SQL injectie!!!!
+                            cmd.Parameters.AddWithValue("@inv_id", inventory_id);
+                            cmd.Parameters.AddWithValue("@item_id", item_id);
+                            cmd.ExecuteNonQuery();//Execute query
+                            CloseConnection();
+                        }
+                    }
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
+
+        public int GetInventoryID(int user_id)//need testing
+        {
+            int inventory_id = 0;
+            if (OpenConnection())
+            {
+                MySqlCommand cmd = connection.CreateCommand();
+                cmd.CommandText = "SELECT inventory_id FROM inventory WHERE user_id = @id "; // Voorkomt SQL injectie!!!!
+                cmd.Parameters.AddWithValue("@id", user_id);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    inventory_id = (int)reader["inventory_id"];
+                }
+                CloseConnection();
+                return inventory_id;
+            }
+            return inventory_id;
+        }
+
+        public bool IsItemInInventory(int item_id, int inventory_id)//need testing
+        {
+            bool inInventory = false;
+            if (OpenConnection())
+            {
+                MySqlCommand cmd = connection.CreateCommand();
+                cmd.CommandText = "SELECT * FROM inventory_item WHERE inventory_id = @inv_id AND item_id = @it_id";
+                cmd.Parameters.AddWithValue("@inv_id", inventory_id);
+                cmd.Parameters.AddWithValue("@it_id", item_id);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    inInventory = true;
+                }
+                CloseConnection();
+                return inInventory;
+            }
+            return inInventory;
+
+        }
+
+
+        public int ItemAmountInInventory(int item_id, int inventory_id)//need testing
+        {
+            int inInventory = 0;
+            if (OpenConnection())
+            {
+                MySqlCommand cmd = connection.CreateCommand();
+                cmd.CommandText = "SELECT amount FROM inventory_item WHERE inventory_id = @inv_id AND item_id = @it_id";
+                cmd.Parameters.AddWithValue("@inv_id", inventory_id);
+                cmd.Parameters.AddWithValue("@it_id", item_id);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    inInventory = (int)reader["amount"];
+                }
+                CloseConnection();
+                return inInventory;
+            }
+            return inInventory;
+
+        }
+
+        public void SetNewStoreAmount(int item_id, int amount)//need testing 
+        {
+            if (OpenConnection())
+            {
+                //Creates user
+                MySqlCommand cmd = connection.CreateCommand();
+                cmd.CommandText = "UPDATE shop SET item_amount = @amount WHERE item_id = @id "; // Voorkomt SQL injectie!!!!
+                cmd.Parameters.AddWithValue("@amount", amount);
+                cmd.Parameters.AddWithValue("@id", item_id);
+                cmd.ExecuteNonQuery();//Execute query
+                CloseConnection();
+            }
+
+        }
+
+
+        public void SetNewUserBalance(int user_id, float balance)//need testing
+        {
+            if (OpenConnection())
+            {
+                //Creates user
+                MySqlCommand cmd = connection.CreateCommand();
+                cmd.CommandText = "UPDATE user SET balance = @amount WHERE id = @id "; // Voorkomt SQL injectie!!!!
+                cmd.Parameters.AddWithValue("@amount", balance);
+                cmd.Parameters.AddWithValue("@id", user_id);
+                cmd.ExecuteNonQuery();//Execute query
+                CloseConnection();
+            }
+
+        }
+
+
+        public float GetItemPrice(string item_name)//need testing
+        {
+            float itemprice = 0;
+            if (OpenConnection())
+            {
+                MySqlCommand cmd = connection.CreateCommand();
+                cmd.CommandText = "SELECT price FROM item WHERE item_name = @name";
+                cmd.Parameters.AddWithValue("@name", item_name);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    itemprice = (float)reader["price"];
+                }
+                CloseConnection();
+                return itemprice;
+            }
+            return itemprice;
+        }
+
+
+        public int GetItemAmount(int item_id)//need testing
+        {
+            int itemamount = 0;
+            if (OpenConnection())
+            {
+                MySqlCommand cmd = connection.CreateCommand();
+                cmd.CommandText = "SELECT item_amount FROM shop WHERE item_id = @id";
+                cmd.Parameters.AddWithValue("@id", item_id);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    itemamount = (int)reader["item_amount"];
+                }
+                CloseConnection();
+                return itemamount;
+            }
+            return itemamount;
+        }
+
+        public int GetItemId(string item_name)//need testing
+        {
+            int itemid = 0;
+            if (OpenConnection())
+            {
+                MySqlCommand cmd = connection.CreateCommand();
+                cmd.CommandText = "SELECT id FROM item WHERE item_name = @name";
+                cmd.Parameters.AddWithValue("@name", item_name);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    itemid = (int)reader["id"];
+                }
+                CloseConnection();
+                return itemid;
+            }
+            return itemid;
+        }
 
         public int GetUserID(string username)//Returns ID from certain username -- tested
         {
@@ -153,14 +365,15 @@ namespace WcfServiceLibrary1
             }
         }
 
-        public List<Item> getInventoryItems(int user_id)//tested
+        public List<Item> getInventoryItems(int user_id)//Needs Testing
         {
             List<Item> userInventory = new List<Item>();
             MySqlCommand cmd = connection.CreateCommand();
             cmd.CommandText = "SELECT item.item_name, inventory_item.amount from item, inventory_item " +
                                 "LEFT JOIN inventory ON inventory.id = inventory_item.inventory_id " +
                                 "LEFT JOIN user ON user.id = inventory.user_id " +
-                                "WHERE inventory.user_id = @user_id";
+                                "WHERE inventory.user_id = @user_id "+
+                                "AND item.id = inventory_item.item_id";
             cmd.Parameters.AddWithValue("@user_id", user_id);
             if (OpenConnection())
             {
@@ -276,4 +489,4 @@ namespace WcfServiceLibrary1
     }
 
 }
-}
+
