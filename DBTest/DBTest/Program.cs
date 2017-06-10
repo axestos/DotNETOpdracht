@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,19 +13,11 @@ namespace DBTest
         {
             
             DBConnect con = new DBConnect();
-            int user_id = con.GetUserID("Kevin");
-            Console.WriteLine(con.UserBalance("Kevin"));
-            IEnumerable<Item> inventory = con.getInventoryItems(user_id).AsEnumerable();
-            foreach(Item i in inventory)
-            {
-                Console.WriteLine(i.itemname+" ("+i.amount+")");
-            }
-            IEnumerable<Item> store = con.getStoreItems().AsEnumerable();
-            foreach(Item s in store)
-            {
-                Console.WriteLine(s.itemname + " amount in store: "+s.amount+" price in €:"+s.price);
-            } 
+
+            Console.WriteLine(con.BuyItem("Kevin", "Pear"));
+
             Console.ReadLine();
+            
         }
         private static string Reverse(string username)
         {

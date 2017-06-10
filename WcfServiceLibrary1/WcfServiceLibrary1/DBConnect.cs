@@ -76,31 +76,33 @@ namespace WcfServiceLibrary1
             int item_id = GetItemId(item_name);
             float user_balance = UserBalance(username);
             float item_price = GetItemPrice(item_name);
-            int item_amount = GetItemAmount(item_id);
+            int item_amount = GetItemAmountInStore(item_id);
             int user_id = GetUserID(username);
             int inventory_id = GetInventoryID(user_id);
             bool itemInInventory = IsItemInInventory(item_id, inventory_id);
             int item_amountInventory = ItemAmountInInventory(item_id, inventory_id);
-
             //check if inventory item is already existant. If true amount +1, If false new Row with item.
 
             if (item_amount > 0)//Is the item sold out?
             {
-                if(item_price <= user_balance)//Can the user pay for the item?
+                Console.WriteLine(item_price <= user_balance);
+                if (item_price <= user_balance)//Can the user pay for the item?
                 {
-                    int new_item_amount = item_amount--;
+                    int new_item_amount = item_amount - 1;
                     float new_user_balance = user_balance - item_price;
                     SetNewStoreAmount(item_id, new_item_amount);//Sets new item amount in store
                     SetNewUserBalance(user_id, new_user_balance);//Sets new userbalance
-                    
-                    if (OpenConnection()) {
+
+                    if (OpenConnection())
+                    {
                         if (itemInInventory)//Item is already in the inventory, amount + 1
                         {
-                            int new_item_inventory_amount = item_amountInventory++;
+                            int new_item_inventory_amount = item_amountInventory + 1;
                             MySqlCommand cmd = connection.CreateCommand();
-                            cmd.CommandText = "UPDATE inventory_item SET amount = @amount WHERE item_id = @id "; // Voorkomt SQL injectie!!!!
+                            cmd.CommandText = "UPDATE inventory_item SET amount = @amount WHERE item_id = @id AND inventory_id=@inv_id"; // Voorkomt SQL injectie!!!!
                             cmd.Parameters.AddWithValue("@amount", new_item_inventory_amount);
                             cmd.Parameters.AddWithValue("@id", item_id);
+                            cmd.Parameters.AddWithValue("@inv_id", inventory_id);
                             cmd.ExecuteNonQuery();//Execute query
                             CloseConnection();
                         }
@@ -130,18 +132,18 @@ namespace WcfServiceLibrary1
         }
 
 
-        public int GetInventoryID(int user_id)//need testing
+        public int GetInventoryID(int user_id)//tested
         {
             int inventory_id = 0;
             if (OpenConnection())
             {
                 MySqlCommand cmd = connection.CreateCommand();
-                cmd.CommandText = "SELECT inventory_id FROM inventory WHERE user_id = @id "; // Voorkomt SQL injectie!!!!
+                cmd.CommandText = "SELECT id FROM inventory WHERE user_id = @id "; // Voorkomt SQL injectie!!!!
                 cmd.Parameters.AddWithValue("@id", user_id);
                 MySqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    inventory_id = (int)reader["inventory_id"];
+                    inventory_id = (int)reader["id"];
                 }
                 CloseConnection();
                 return inventory_id;
@@ -149,7 +151,7 @@ namespace WcfServiceLibrary1
             return inventory_id;
         }
 
-        public bool IsItemInInventory(int item_id, int inventory_id)//need testing
+        public bool IsItemInInventory(int item_id, int inventory_id)//tested
         {
             bool inInventory = false;
             if (OpenConnection())
@@ -171,7 +173,7 @@ namespace WcfServiceLibrary1
         }
 
 
-        public int ItemAmountInInventory(int item_id, int inventory_id)//need testing
+        public int ItemAmountInInventory(int item_id, int inventory_id)//Tested
         {
             int inInventory = 0;
             if (OpenConnection())
@@ -192,7 +194,7 @@ namespace WcfServiceLibrary1
 
         }
 
-        public void SetNewStoreAmount(int item_id, int amount)//need testing 
+        public void SetNewStoreAmount(int item_id, int amount)//tested
         {
             if (OpenConnection())
             {
@@ -208,7 +210,7 @@ namespace WcfServiceLibrary1
         }
 
 
-        public void SetNewUserBalance(int user_id, float balance)//need testing
+        public void SetNewUserBalance(int user_id, float balance)//tested
         {
             if (OpenConnection())
             {
@@ -224,7 +226,7 @@ namespace WcfServiceLibrary1
         }
 
 
-        public float GetItemPrice(string item_name)//need testing
+        public float GetItemPrice(string item_name)//tested
         {
             float itemprice = 0;
             if (OpenConnection())
@@ -244,7 +246,7 @@ namespace WcfServiceLibrary1
         }
 
 
-        public int GetItemAmount(int item_id)//need testing
+        public int GetItemAmountInStore(int item_id)//tested
         {
             int itemamount = 0;
             if (OpenConnection())
@@ -263,7 +265,7 @@ namespace WcfServiceLibrary1
             return itemamount;
         }
 
-        public int GetItemId(string item_name)//need testing
+        public int GetItemId(string item_name)//tested
         {
             int itemid = 0;
             if (OpenConnection())
@@ -365,14 +367,14 @@ namespace WcfServiceLibrary1
             }
         }
 
-        public List<Item> getInventoryItems(int user_id)//Needs Testing
+        public List<Item> getInventoryItems(int user_id)//Tested
         {
             List<Item> userInventory = new List<Item>();
             MySqlCommand cmd = connection.CreateCommand();
             cmd.CommandText = "SELECT item.item_name, inventory_item.amount from item, inventory_item " +
                                 "LEFT JOIN inventory ON inventory.id = inventory_item.inventory_id " +
                                 "LEFT JOIN user ON user.id = inventory.user_id " +
-                                "WHERE inventory.user_id = @user_id "+
+                                "WHERE inventory.user_id = @user_id " +
                                 "AND item.id = inventory_item.item_id";
             cmd.Parameters.AddWithValue("@user_id", user_id);
             if (OpenConnection())
