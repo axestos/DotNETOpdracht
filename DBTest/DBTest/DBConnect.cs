@@ -159,8 +159,9 @@ namespace DBTest
             MySqlCommand cmd = connection.CreateCommand();
             cmd.CommandText = "SELECT item.item_name, inventory_item.amount from item, inventory_item " +
                                 "LEFT JOIN inventory ON inventory.id = inventory_item.inventory_id " +
-                                "LEFT JOIN user ON user.id = inventory.user_id" +
+                                "LEFT JOIN user ON user.id = inventory.user_id " +
                                 "WHERE inventory.user_id = @user_id";
+            
             cmd.Parameters.AddWithValue("@user_id", user_id);
             if (OpenConnection())
             {

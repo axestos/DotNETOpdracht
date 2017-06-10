@@ -2,9 +2,9 @@
 {
     internal class Item
     {
-        private string itemname;
-        private int amount;
-        private float price;
+        public string itemname;
+        public int amount;
+        public float price;
 
         public Item(string itemname, int amount, float price)
         {
