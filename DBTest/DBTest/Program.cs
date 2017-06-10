@@ -12,7 +12,7 @@ namespace DBTest
         {
             
             DBConnect con = new DBConnect();
-            con.getStoreItems();
+            con.InsertNewUser("Bart","traB");
             Console.ReadLine();
         }
         private static string Reverse(string username)

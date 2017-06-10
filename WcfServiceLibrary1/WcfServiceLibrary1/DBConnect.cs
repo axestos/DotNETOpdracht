@@ -12,7 +12,7 @@ namespace WcfServiceLibrary1
 
         /*
          TO DO
-         BuyService(username, user_money, item) -> Get user_id by name, Check store amount, check balance of user by user_id, check price of product, add to inventory if balance high enough, refresh.
+         BuyService(username, user_money, item) -> Get user_id by name(possible), Check store amount, check balance of user by user_id(possible), check price of product, add to inventory if balance high enough, refresh.
              */
         private MySqlConnection connection;
         private string server;
@@ -70,7 +70,7 @@ namespace WcfServiceLibrary1
 
 
 
-        public int GetUserID(string username)//Returns ID from certain username
+        public int GetUserID(string username)//Returns ID from certain username -- tested
         {
             int user_id = 0;
 
@@ -84,7 +84,7 @@ namespace WcfServiceLibrary1
                 {
                     user_id = (int)reader["id"];
                 }
-
+                CloseConnection();
                 return user_id;//filled up or empty if none found
 
             }
@@ -95,27 +95,40 @@ namespace WcfServiceLibrary1
 
         }
 
-        public void InsertNewUser(string username, string password)//Insert new user
+        public void InsertNewUser(string username, string password)//Insert new user -- tested
         {
             if (OpenConnection())
             {
+                //Creates user
                 MySqlCommand cmd = connection.CreateCommand();
                 cmd.CommandText = "INSERT INTO user(username, password, balance) VALUES(@name,@password,10) "; // Voorkomt SQL injectie!!!!
                 cmd.Parameters.AddWithValue("@name", username);
                 cmd.Parameters.AddWithValue("@password", password);
                 cmd.ExecuteNonQuery();//Execute query
+                CloseConnection();
 
+                InsertNewInventory(username);
+
+            }
+        }
+
+        public void InsertNewInventory(string username)//tested
+        {
+            int user_id = GetUserID(username);
+            if (OpenConnection())
+            {
                 //Makes inventory for user
-                MySqlCommand user = connection.CreateCommand();
-                user.CommandText = "INSERT INTO inventory(user_id) VALUES(@user_id) ";
-                user.Parameters.AddWithValue("@user_id", GetUserID(username));
-                user.ExecuteNonQuery();
+                MySqlCommand inv = connection.CreateCommand();
+                inv.CommandText = "INSERT INTO inventory(user_id) VALUES(@user_id) ";
+                inv.Parameters.AddWithValue("@user_id", user_id);
+                inv.ExecuteNonQuery();
                 CloseConnection();
             }
         }
 
 
-        public List<Item> getStoreItems()
+
+        public List<Item> getStoreItems()//need testing
         {
             List<Item> storeStock = new List<Item>();
             MySqlCommand cmd = connection.CreateCommand();
@@ -130,7 +143,7 @@ namespace WcfServiceLibrary1
                     float price = (float)reader["price"];
                     storeStock.Add(new Item(itemname, amount, price));
                 }
-
+                CloseConnection();
                 return storeStock;//filled up or empty if none found
 
             }
@@ -140,13 +153,13 @@ namespace WcfServiceLibrary1
             }
         }
 
-        public List<Item> getInventoryItems(int user_id)
+        public List<Item> getInventoryItems(int user_id)//need testing
         {
             List<Item> userInventory = new List<Item>();
             MySqlCommand cmd = connection.CreateCommand();
             cmd.CommandText = "SELECT item.item_name, inventory_item.amount from item, inventory_item " +
                                 "LEFT JOIN inventory ON inventory.id = inventory_item.inventory_id " +
-                                "LEFT JOIN user ON user.id = inventory.user_id"+
+                                "LEFT JOIN user ON user.id = inventory.user_id" +
                                 "WHERE inventory.user_id = @user_id";
             cmd.Parameters.AddWithValue("@user_id", user_id);
             if (OpenConnection())
@@ -158,7 +171,7 @@ namespace WcfServiceLibrary1
                     int amount = (int)reader["amount"];
                     userInventory.Add(new Item(itemname, amount));
                 }
-
+                CloseConnection();
                 return userInventory;//filled up or empty if none found
 
             }
@@ -170,7 +183,7 @@ namespace WcfServiceLibrary1
         }
 
         //UserExist statement
-        public bool DoesUserExist(string username)
+        public bool DoesUserExist(string username)//tested
         {
             MySqlCommand cmd = connection.CreateCommand();
             cmd.CommandText = "SELECT username from user WHERE username = @name ";
@@ -184,7 +197,7 @@ namespace WcfServiceLibrary1
                     user = reader["username"].ToString();
 
                 }
-
+                CloseConnection();
                 if (user == null)
                 {
                     return false;//User doesn't exist
@@ -202,12 +215,12 @@ namespace WcfServiceLibrary1
 
         }
 
-        public bool PasswordCorrect(string username, string password)
+        public bool PasswordCorrect(string username, string password)//tested
         {
             MySqlCommand cmd = connection.CreateCommand();
             cmd.CommandText = "SELECT password FROM user WHERE username = @name "; // Voorkomt SQL injectie!!!!
             cmd.Parameters.AddWithValue("@name", username);
-            
+
             if (OpenConnection())
             {
                 string db_password = null;
@@ -216,7 +229,7 @@ namespace WcfServiceLibrary1
                 {
                     db_password = reader["password"].ToString();
                 }
-
+                CloseConnection();
                 if (db_password.Equals(password))
                 {
                     return true;//Password in form is same as password in database
@@ -225,7 +238,7 @@ namespace WcfServiceLibrary1
                 {
                     return false;//Password in form is NOT the same as password in database
                 }
-                
+
 
             }
             else
@@ -235,10 +248,10 @@ namespace WcfServiceLibrary1
 
         }
 
-        public float UserBalance(string username)
+        public float UserBalance(string username)//Needs testing
         {
             MySqlCommand cmd = connection.CreateCommand();
-            cmd.CommandText = "SELECT balance FROM user WHERE username = @name"; 
+            cmd.CommandText = "SELECT balance FROM user WHERE username = @name";
             cmd.Parameters.AddWithValue("@name", username);
             float balance = 0;
 
@@ -249,7 +262,7 @@ namespace WcfServiceLibrary1
                 {
                     balance = (float)reader["balance"];
                 }
-
+                CloseConnection();
                 return balance;
 
 
@@ -260,6 +273,7 @@ namespace WcfServiceLibrary1
             }
 
         }
-
     }
+
+}
 }
