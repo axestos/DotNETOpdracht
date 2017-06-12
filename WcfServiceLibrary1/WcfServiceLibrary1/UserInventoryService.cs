@@ -10,7 +10,7 @@ namespace WcfServiceLibrary1
     // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "UserInventoryService" in both code and config file together.
     public class UserInventoryService : IUserInventoryService
     {
-        DBConnect con = new DBConnect();
+        DBConnect con = DBConnect.DB_INSTANCE;
         public IEnumerable<Item> UserInventory(string username)
         {
             int user_id = con.GetUserID(username);

@@ -10,6 +10,8 @@ namespace WcfServiceLibrary1
     class DBConnect
     {
 
+        public static DBConnect DB_INSTANCE = new DBConnect("localhost", "webwinkel", "root", "");
+
         private MySqlConnection connection;
         private string server;
         private string database;
@@ -17,12 +19,19 @@ namespace WcfServiceLibrary1
         private string password;
 
         //Constructor
-        public DBConnect()
+        public DBConnect(string server, string database, string uid, string password)
         {
-            Initialize();
+            this.server = server;
+            this.database = database;
+            this.uid = uid;
+            this.password = password;
+            connection = new MySqlConnection("SERVER=" + server + ";" + "DATABASE=" +
+            database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";");
         }
 
-        //Initialize values
+
+        //Obsolete
+        /*//Initialize values
         private void Initialize()
         {
             server = "localhost";
@@ -34,7 +43,7 @@ namespace WcfServiceLibrary1
             database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
 
             connection = new MySqlConnection(connectionString);
-        }
+        }*/
 
         //open connection to database
         private bool OpenConnection()
@@ -146,7 +155,6 @@ namespace WcfServiceLibrary1
                     inventory_id = (int)reader["id"];
                 }
                 CloseConnection();
-                return inventory_id;
             }
             return inventory_id;
         }
@@ -166,7 +174,6 @@ namespace WcfServiceLibrary1
                     inInventory = true;
                 }
                 CloseConnection();
-                return inInventory;
             }
             return inInventory;
 
@@ -188,7 +195,6 @@ namespace WcfServiceLibrary1
                     inInventory = (int)reader["amount"];
                 }
                 CloseConnection();
-                return inInventory;
             }
             return inInventory;
 
@@ -228,7 +234,7 @@ namespace WcfServiceLibrary1
 
         public float GetItemPrice(string item_name)//tested
         {
-            float itemprice = 0;
+            float itemPrice = 0;
             if (OpenConnection())
             {
                 MySqlCommand cmd = connection.CreateCommand();
@@ -237,18 +243,17 @@ namespace WcfServiceLibrary1
                 MySqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    itemprice = (float)reader["price"];
+                    itemPrice = (float)reader["price"];
                 }
                 CloseConnection();
-                return itemprice;
             }
-            return itemprice;
+            return itemPrice;
         }
 
 
         public int GetItemAmountInStore(int item_id)//tested
         {
-            int itemamount = 0;
+            int itemAmount = 0;
             if (OpenConnection())
             {
                 MySqlCommand cmd = connection.CreateCommand();
@@ -257,17 +262,16 @@ namespace WcfServiceLibrary1
                 MySqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    itemamount = (int)reader["item_amount"];
+                    itemAmount = (int)reader["item_amount"];
                 }
                 CloseConnection();
-                return itemamount;
             }
-            return itemamount;
+            return itemAmount;
         }
 
         public int GetItemId(string item_name)//tested
         {
-            int itemid = 0;
+            int itemId = 0;
             if (OpenConnection())
             {
                 MySqlCommand cmd = connection.CreateCommand();
@@ -276,12 +280,11 @@ namespace WcfServiceLibrary1
                 MySqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    itemid = (int)reader["id"];
+                    itemId = (int)reader["id"];
                 }
                 CloseConnection();
-                return itemid;
             }
-            return itemid;
+            return itemId;
         }
 
         public int GetUserID(string username)//Returns ID from certain username -- tested
@@ -299,13 +302,11 @@ namespace WcfServiceLibrary1
                     user_id = (int)reader["id"];
                 }
                 CloseConnection();
-                return user_id;//filled up or empty if none found
 
             }
-            else
-            {
-                return user_id;//empty
-            }
+
+            return user_id;//filled up or empty if none found
+
 
         }
 
@@ -358,13 +359,12 @@ namespace WcfServiceLibrary1
                     storeStock.Add(new Item(itemname, amount, price));
                 }
                 CloseConnection();
-                return storeStock;//filled up or empty if none found
 
             }
-            else
-            {
-                return storeStock;//empty
-            }
+            
+
+            return storeStock;//filled up or empty if none found
+
         }
 
         public List<Item> getInventoryItems(int user_id)//Tested
@@ -387,13 +387,10 @@ namespace WcfServiceLibrary1
                     userInventory.Add(new Item(itemname, amount));
                 }
                 CloseConnection();
-                return userInventory;//filled up or empty if none found
 
             }
-            else
-            {
-                return userInventory;//empty
-            }
+            
+            return userInventory;//filled up or empty if none found
 
         }
 
@@ -401,32 +398,22 @@ namespace WcfServiceLibrary1
         public bool DoesUserExist(string username)//tested
         {
             MySqlCommand cmd = connection.CreateCommand();
+            string user = null;
             cmd.CommandText = "SELECT username from user WHERE username = @name ";
             cmd.Parameters.AddWithValue("@name", username);
             if (OpenConnection())
             {
                 MySqlDataReader reader = cmd.ExecuteReader();
-                string user = null;
                 while (reader.Read())
                 {
                     user = reader["username"].ToString();
 
                 }
                 CloseConnection();
-                if (user == null)
-                {
-                    return false;//User doesn't exist
-                }
-                else
-                {
-                    return true;//User already exists
-                }
+
 
             }
-            else
-            {
-                return true;//Omdat er iets moet returnen
-            }
+            return (user == null);
 
         }
 
@@ -435,32 +422,23 @@ namespace WcfServiceLibrary1
             MySqlCommand cmd = connection.CreateCommand();
             cmd.CommandText = "SELECT password FROM user WHERE username = @name "; // Voorkomt SQL injectie!!!!
             cmd.Parameters.AddWithValue("@name", username);
+            string db_password = null;
 
             if (OpenConnection())
             {
-                string db_password = null;
                 MySqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
                     db_password = reader["password"].ToString();
                 }
                 CloseConnection();
-                if (db_password.Equals(password))
-                {
-                    return true;//Password in form is same as password in database
-                }
-                else
-                {
-                    return false;//Password in form is NOT the same as password in database
-                }
+
+
 
 
             }
-            else
-            {
-                return false;
-            }
 
+            return (db_password.Equals(password));
         }
 
         public float UserBalance(string username)//tested
@@ -478,14 +456,12 @@ namespace WcfServiceLibrary1
                     balance = (float)reader["balance"];
                 }
                 CloseConnection();
-                return balance;
 
 
             }
-            else
-            {
-                return balance;
-            }
+
+
+            return balance;
 
         }
     }

@@ -8,19 +8,20 @@ namespace WcfServiceLibrary1
 {
     public class Item
     {
-        private string itemname;
-        private int amount;
-        private float price;
+        public string itemName { get; set; }
+        public int amount { get; set; }
+        public float price { get; set; }
+
         public Item(string itemname, int amount, float price)
         {
-            this.itemname = itemname;
+            this.itemName = itemname;
             this.amount = amount;
             this.price = price;
         }
 
         public Item(string itemname, int amount)
         {
-            this.itemname = itemname;
+            this.itemName = itemname;
             this.amount = amount;
         }
 
