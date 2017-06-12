@@ -80,11 +80,10 @@ namespace WcfServiceLibrary1
              */
 
         //if this one is called, also call the refresh and GetUserInventoryServices to reset both fields
-        public bool BuyItem(string username, string item_name)//need testing
+        public bool BuyItem(string username, int item_id)//need testing
         {
-            int item_id = GetItemId(item_name);
             float user_balance = UserBalance(username);
-            float item_price = GetItemPrice(item_name);
+            float item_price = GetItemPrice(item_id);
             int item_amount = GetItemAmountInStore(item_id);
             int user_id = GetUserID(username);
             int inventory_id = GetInventoryID(user_id);
@@ -232,14 +231,14 @@ namespace WcfServiceLibrary1
         }
 
 
-        public float GetItemPrice(string item_name)//tested
+        public float GetItemPrice(int item_id)//tested
         {
             float itemPrice = 0;
             if (OpenConnection())
             {
                 MySqlCommand cmd = connection.CreateCommand();
-                cmd.CommandText = "SELECT price FROM item WHERE item_name = @name";
-                cmd.Parameters.AddWithValue("@name", item_name);
+                cmd.CommandText = "SELECT price FROM item WHERE id = @item_id";
+                cmd.Parameters.AddWithValue("@item_id", item_id);
                 MySqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {

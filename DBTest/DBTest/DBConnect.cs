@@ -10,6 +10,8 @@ namespace DBTest
     class DBConnect
     {
 
+        public static DBConnect DB_INSTANCE = new DBConnect("localhost", "webwinkel", "root", "");
+
         private MySqlConnection connection;
         private string server;
         private string database;
@@ -27,7 +29,9 @@ namespace DBTest
             database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";");
         }
 
-        //Initialize values
+
+        //Obsolete
+        /*//Initialize values
         private void Initialize()
         {
             server = "localhost";
@@ -39,7 +43,7 @@ namespace DBTest
             database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
 
             connection = new MySqlConnection(connectionString);
-        }
+        }*/
 
         //open connection to database
         private bool OpenConnection()
@@ -69,8 +73,14 @@ namespace DBTest
             }
         }
 
-        //if this one is called, also call the RefreshService and GetUserInventoryService to reset both fields in the application
-        public bool BuyItem(string username, string item_name)//Tested
+
+        /*
+         TO DO
+         BuyService(username, user_money, item) -> Get user_id by name(possible), Check store amount, check balance of user by user_id(possible), check price of product, add to inventory if balance high enough, refresh.
+             */
+
+        //if this one is called, also call the refresh and GetUserInventoryServices to reset both fields
+        public bool BuyItem(string username, string item_name)//need testing
         {
             int item_id = GetItemId(item_name);
             float user_balance = UserBalance(username);
@@ -84,10 +94,9 @@ namespace DBTest
 
             if (item_amount > 0)//Is the item sold out?
             {
-                Console.WriteLine(item_price <= user_balance);
                 if (item_price <= user_balance)//Can the user pay for the item?
                 {
-                    int new_item_amount = item_amount-1;
+                    int new_item_amount = item_amount - 1;
                     float new_user_balance = user_balance - item_price;
                     SetNewStoreAmount(item_id, new_item_amount);//Sets new item amount in store
                     SetNewUserBalance(user_id, new_user_balance);//Sets new userbalance
@@ -96,7 +105,7 @@ namespace DBTest
                     {
                         if (itemInInventory)//Item is already in the inventory, amount + 1
                         {
-                            int new_item_inventory_amount = item_amountInventory+1;
+                            int new_item_inventory_amount = item_amountInventory + 1;
                             MySqlCommand cmd = connection.CreateCommand();
                             cmd.CommandText = "UPDATE inventory_item SET amount = @amount WHERE item_id = @id AND inventory_id=@inv_id"; // Voorkomt SQL injectie!!!!
                             cmd.Parameters.AddWithValue("@amount", new_item_inventory_amount);
@@ -145,7 +154,6 @@ namespace DBTest
                     inventory_id = (int)reader["id"];
                 }
                 CloseConnection();
-                return inventory_id;
             }
             return inventory_id;
         }
@@ -165,7 +173,6 @@ namespace DBTest
                     inInventory = true;
                 }
                 CloseConnection();
-                return inInventory;
             }
             return inInventory;
 
@@ -187,7 +194,6 @@ namespace DBTest
                     inInventory = (int)reader["amount"];
                 }
                 CloseConnection();
-                return inInventory;
             }
             return inInventory;
 
@@ -227,7 +233,7 @@ namespace DBTest
 
         public float GetItemPrice(string item_name)//tested
         {
-            float itemprice = 0;
+            float itemPrice = 0;
             if (OpenConnection())
             {
                 MySqlCommand cmd = connection.CreateCommand();
@@ -236,18 +242,17 @@ namespace DBTest
                 MySqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    itemprice = (float)reader["price"];
+                    itemPrice = (float)reader["price"];
                 }
                 CloseConnection();
-                return itemprice;
             }
-            return itemprice;
+            return itemPrice;
         }
 
 
         public int GetItemAmountInStore(int item_id)//tested
         {
-            int itemamount = 0;
+            int itemAmount = 0;
             if (OpenConnection())
             {
                 MySqlCommand cmd = connection.CreateCommand();
@@ -256,17 +261,16 @@ namespace DBTest
                 MySqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    itemamount = (int)reader["item_amount"];
+                    itemAmount = (int)reader["item_amount"];
                 }
                 CloseConnection();
-                return itemamount;
             }
-            return itemamount;
+            return itemAmount;
         }
 
         public int GetItemId(string item_name)//tested
         {
-            int itemid = 0;
+            int itemId = 0;
             if (OpenConnection())
             {
                 MySqlCommand cmd = connection.CreateCommand();
@@ -275,12 +279,11 @@ namespace DBTest
                 MySqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    itemid = (int)reader["id"];
+                    itemId = (int)reader["id"];
                 }
                 CloseConnection();
-                return itemid;
             }
-            return itemid;
+            return itemId;
         }
 
         public int GetUserID(string username)//Returns ID from certain username -- tested
@@ -298,13 +301,11 @@ namespace DBTest
                     user_id = (int)reader["id"];
                 }
                 CloseConnection();
-                return user_id;//filled up or empty if none found
 
             }
-            else
-            {
-                return user_id;//empty
-            }
+
+            return user_id;//filled up or empty if none found
+
 
         }
 
@@ -357,13 +358,12 @@ namespace DBTest
                     storeStock.Add(new Item(itemname, amount, price));
                 }
                 CloseConnection();
-                return storeStock;//filled up or empty if none found
 
             }
-            else
-            {
-                return storeStock;//empty
-            }
+
+
+            return storeStock;//filled up or empty if none found
+
         }
 
         public List<Item> getInventoryItems(int user_id)//Tested
@@ -386,13 +386,10 @@ namespace DBTest
                     userInventory.Add(new Item(itemname, amount));
                 }
                 CloseConnection();
-                return userInventory;//filled up or empty if none found
 
             }
-            else
-            {
-                return userInventory;//empty
-            }
+
+            return userInventory;//filled up or empty if none found
 
         }
 
@@ -400,32 +397,22 @@ namespace DBTest
         public bool DoesUserExist(string username)//tested
         {
             MySqlCommand cmd = connection.CreateCommand();
+            string user = null;
             cmd.CommandText = "SELECT username from user WHERE username = @name ";
             cmd.Parameters.AddWithValue("@name", username);
             if (OpenConnection())
             {
                 MySqlDataReader reader = cmd.ExecuteReader();
-                string user = null;
                 while (reader.Read())
                 {
                     user = reader["username"].ToString();
 
                 }
                 CloseConnection();
-                if (user == null)
-                {
-                    return false;//User doesn't exist
-                }
-                else
-                {
-                    return true;//User already exists
-                }
+
 
             }
-            else
-            {
-                return true;//Omdat er iets moet returnen
-            }
+            return (user == null);
 
         }
 
@@ -434,32 +421,23 @@ namespace DBTest
             MySqlCommand cmd = connection.CreateCommand();
             cmd.CommandText = "SELECT password FROM user WHERE username = @name "; // Voorkomt SQL injectie!!!!
             cmd.Parameters.AddWithValue("@name", username);
+            string db_password = null;
 
             if (OpenConnection())
             {
-                string db_password = null;
                 MySqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
                     db_password = reader["password"].ToString();
                 }
                 CloseConnection();
-                if (db_password.Equals(password))
-                {
-                    return true;//Password in form is same as password in database
-                }
-                else
-                {
-                    return false;//Password in form is NOT the same as password in database
-                }
+
+
 
 
             }
-            else
-            {
-                return false;
-            }
 
+            return (db_password.Equals(password));
         }
 
         public float UserBalance(string username)//tested
@@ -477,14 +455,12 @@ namespace DBTest
                     balance = (float)reader["balance"];
                 }
                 CloseConnection();
-                return balance;
 
 
             }
-            else
-            {
-                return balance;
-            }
+
+
+            return balance;
 
         }
     }

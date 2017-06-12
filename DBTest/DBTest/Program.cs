@@ -11,13 +11,15 @@ namespace DBTest
     {
         static void Main(string[] args)
         {
-            
-            DBConnect con = new DBConnect();
 
+            DBConnect con = DBConnect.DB_INSTANCE;
+
+            con.SetNewUserBalance(1,10);
+            Console.WriteLine(con.UserBalance("Kevin"));
             Console.WriteLine(con.BuyItem("Kevin", "Pear"));
+            Console.WriteLine(con.UserBalance("Kevin"));
 
             Console.ReadLine();
-            
         }
         private static string Reverse(string username)
         {
