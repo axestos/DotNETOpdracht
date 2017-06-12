@@ -31,8 +31,10 @@ namespace webshopGUI
 
             if (login.LogIn(usernameLoginText.Text, passwordLoginText.Text))
             {
+                Shop shop = new Shop(usernameLoginText.Text);
                 this.Hide();
-                new Shop(usernameLoginText.Text).ShowDialog();
+                this.Owner = shop;
+                shop.ShowDialog();
             }
             else
             {
