@@ -10,7 +10,7 @@ namespace WcfServiceLibrary1
     // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "LogInService" in both code and config file together.
     public class LogInService : ILogInService
     {
-        DBConnect con = new DBConnect();
+        DBConnect con = DBConnect.DB_INSTANCE;
         public bool LogIn(string username, string password)//Moet straks in applicatie showen dat inloggen mislukt is. Dus als hier false uit komt dat het inloggen niet mogelijk was.
         {
             if (con.DoesUserExist(username))//True, user does exist

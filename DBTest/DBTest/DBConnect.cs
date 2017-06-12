@@ -17,9 +17,14 @@ namespace DBTest
         private string password;
 
         //Constructor
-        public DBConnect()
+        public DBConnect(string server, string database, string uid, string password)
         {
-            Initialize();
+            this.server = server;
+            this.database = database;
+            this.uid = uid;
+            this.password = password;
+            connection = new MySqlConnection("SERVER=" + server + ";" + "DATABASE=" +
+            database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";");
         }
 
         //Initialize values

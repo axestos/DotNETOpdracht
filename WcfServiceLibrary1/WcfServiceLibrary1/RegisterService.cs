@@ -11,7 +11,7 @@ namespace WcfServiceLibrary1
     // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "RegisterService" in both code and config file together.
     public class RegisterService : IRegisterService
     {
-        DBConnect con = new DBConnect();
+        DBConnect con = DBConnect.DB_INSTANCE;
         public string RegisterUser(string username) {
 
             if (!con.DoesUserExist(username))//False, user does not exist

@@ -10,7 +10,7 @@ namespace WcfServiceLibrary1
     // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "GetUserBalanceService" in both code and config file together.
     public class GetUserBalanceService : IGetUserBalanceService
     {
-        DBConnect con = new DBConnect();
+        DBConnect con = DBConnect.DB_INSTANCE;
 
         public float GetBalance(string username)
         {
