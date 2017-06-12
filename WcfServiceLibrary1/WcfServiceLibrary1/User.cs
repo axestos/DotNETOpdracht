@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace WcfServiceLibrary1
 {
+    [Serializable]
     public class User
     {
         public int userId { get; }

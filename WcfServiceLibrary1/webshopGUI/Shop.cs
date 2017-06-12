@@ -34,7 +34,7 @@ namespace webshopGUI
 
                 if(item == null)
                 {
-                    errorShop.ForeColor = System.Drawing.Color.Red;
+                    errorShop.ForeColor = Color.Red;
                     errorShop.Text = "This item has been sold out.";
                     return;
                 }
@@ -44,23 +44,23 @@ namespace webshopGUI
                 {
                     AfterPurchase();
                     errorShop.Text = "Product succesfully bought.";
-                    errorShop.ForeColor = System.Drawing.Color.Green;
+                    errorShop.ForeColor = Color.Green;
                     return;
                 }
 
                 if(loggedInUser.balance < item.price)
                 {
-                    errorShop.ForeColor = System.Drawing.Color.Red;
+                    errorShop.ForeColor = Color.Red;
                     errorShop.Text = "You don't have enough money to do that.";
                     return;
                 }
 
 
-                errorShop.ForeColor = System.Drawing.Color.Red;
+                errorShop.ForeColor = Color.Red;
                 errorShop.Text = "This product is currently not available.";
                 return;
             }
-            errorShop.ForeColor = System.Drawing.Color.Red;
+            errorShop.ForeColor = Color.Red;
             errorShop.Text = "Please select a product";
         }
 

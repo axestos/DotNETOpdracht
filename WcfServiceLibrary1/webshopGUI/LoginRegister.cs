@@ -22,9 +22,9 @@ namespace webshopGUI
 
         private void loginButton_Click(object sender, EventArgs e)
         {
-            if (usernameLoginText.Text == "" || passwordLoginText.Text == "")
+            if (usernameLoginText.Text.Trim() == "" || passwordLoginText.Text.Trim() == "")
             {
-                errorMessageLogin.ForeColor = System.Drawing.Color.Red;
+                errorMessageLogin.ForeColor = Color.Red;
                 errorMessageLogin.Text = "Please fill in a valid username or password.";
                 return;
             }
@@ -38,7 +38,7 @@ namespace webshopGUI
             }
             else
             {
-                errorMessageLogin.ForeColor = System.Drawing.Color.Red;
+                errorMessageLogin.ForeColor = Color.Red;
                 errorMessageLogin.Text = "Wrong username or password.";
             }
 
@@ -52,14 +52,25 @@ namespace webshopGUI
 
         private void registerButton_Click(object sender, EventArgs e)
         {
-            if(usernameRegisterText.Text == "")
+            if(usernameRegisterText.Text.Trim() == "")
             {
-                errorMessageRegister.ForeColor = System.Drawing.Color.Red;
+                errorMessageRegister.ForeColor = Color.Red;
                 errorMessageRegister.Text = "Please fill in a valid username.";
                 return;
             }
-            errorMessageRegister.ForeColor = System.Drawing.Color.Green;
-            errorMessageRegister.Text = register.RegisterUser(usernameRegisterText.Text);
+
+            string password = register.RegisterUser(usernameRegisterText.Text);
+            if (password == "")
+            {
+                errorMessageRegister.ForeColor = Color.Red;
+                errorMessageRegister.Text = "This username is already taken.";
+                return;
+            }
+            else if (password != "")
+            {
+                errorMessageRegister.ForeColor = Color.Green;
+                errorMessageRegister.Text = "User: "+ usernameRegisterText.Text + "    Your password: "+password;
+            }
         }
     }
 }

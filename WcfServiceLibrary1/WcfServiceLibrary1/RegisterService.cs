@@ -18,12 +18,12 @@ namespace WcfServiceLibrary1
             {
                 string password = Reverse(username);
                 con.InsertNewUser(username, password);
-                string newUser = "User: " + username + " your password is: " + password;
+                string newUser = password;
                 return newUser;
             }
             else
             {
-                return "This username already exists, please try again.";
+                return "";
 
             }
 
