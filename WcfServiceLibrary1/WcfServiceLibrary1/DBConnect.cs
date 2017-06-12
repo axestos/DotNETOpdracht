@@ -10,6 +10,7 @@ namespace WcfServiceLibrary1
     class DBConnect
     {
 
+        //DB INSTANCE
         public static DBConnect DB_INSTANCE = new DBConnect("localhost", "webwinkel", "root", "");
 
         private MySqlConnection connection;
