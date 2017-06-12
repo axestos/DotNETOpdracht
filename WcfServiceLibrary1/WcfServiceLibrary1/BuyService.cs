@@ -11,9 +11,9 @@ namespace WcfServiceLibrary1
     public class BuyService : IBuyService
     {
         DBConnect con = DBConnect.DB_INSTANCE;
-        public bool BuyItem(string username, int item_id)//if this one is called, also call the refresh and GetUserInventoryServices to reset both fields
+        public bool BuyItem(int user_id, int item_id)//if this one is called, also call the refresh and GetUserInventoryServices to reset both fields
         {
-            return con.BuyItem(username, item_id);
+            return con.BuyItem(user_id, item_id);
         }
     }
 }

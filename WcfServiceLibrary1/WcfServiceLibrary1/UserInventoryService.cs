@@ -11,9 +11,8 @@ namespace WcfServiceLibrary1
     public class UserInventoryService : IUserInventoryService
     {
         DBConnect con = DBConnect.DB_INSTANCE;
-        public IEnumerable<Item> UserInventory(string username)
+        public IEnumerable<Item> UserInventory(int user_id)
         {
-            int user_id = con.GetUserID(username);
             return con.getInventoryItems(user_id).AsEnumerable();
         }
     }

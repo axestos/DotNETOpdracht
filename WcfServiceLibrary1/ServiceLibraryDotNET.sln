@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weekopdracht5-6", "WcfServiceLibrary1\Weekopdracht5-6.csproj", "{B2308737-00CD-4DD3-BE87-8BD3060A37A5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webshopGUI", "webshopGUI\webshopGUI.csproj", "{EBA56D2D-3619-4E09-A06C-5F49F22F7056}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{B2308737-00CD-4DD3-BE87-8BD3060A37A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2308737-00CD-4DD3-BE87-8BD3060A37A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2308737-00CD-4DD3-BE87-8BD3060A37A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBA56D2D-3619-4E09-A06C-5F49F22F7056}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBA56D2D-3619-4E09-A06C-5F49F22F7056}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBA56D2D-3619-4E09-A06C-5F49F22F7056}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBA56D2D-3619-4E09-A06C-5F49F22F7056}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

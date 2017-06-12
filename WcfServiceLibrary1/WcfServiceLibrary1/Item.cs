@@ -24,6 +24,13 @@ namespace WcfServiceLibrary1
             this.itemName = itemname;
             this.amount = amount;
         }
+        public override string ToString()
+        {
+            return this.itemName + ", amount: " + this.amount + " , price:  " + this.price; 
+        }
 
     }
+
+
+    
 }

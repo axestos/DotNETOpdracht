@@ -15,10 +15,12 @@ namespace WcfServiceLibrary1
         {
             if (con.DoesUserExist(username))//True, user does exist
             {
+                Console.WriteLine("A");
                 return con.PasswordCorrect(username, password);
             }
             else
             {
+                Console.WriteLine("b");
                 return false;
             }
             }

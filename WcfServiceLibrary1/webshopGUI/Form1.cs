@@ -8,11 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace WcfServiceLibrary1
+namespace webshopGUI
 {
-    public partial class Shop : Form
+    public partial class Form1 : Form
     {
-        public Shop()
+        public Form1()
         {
             InitializeComponent();
         }

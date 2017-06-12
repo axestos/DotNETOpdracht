@@ -7,11 +7,11 @@ using System.Text;
 
 namespace WcfServiceLibrary1
 {
-    // NOTE: You can use the "Rename" command on the "Refactor" menu to change the interface name "IGetUserBalanceService" in both code and config file together.
+    // NOTE: You can use the "Rename" command on the "Refactor" menu to change the interface name "IUserIDService" in both code and config file together.
     [ServiceContract]
-    public interface IGetUserBalanceService
+    public interface IUserIDService
     {
         [OperationContract]
-        float GetBalance(int user_id);
+        int GetUserID(string username);
     }
 }

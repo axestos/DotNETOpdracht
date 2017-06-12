@@ -12,9 +12,9 @@ namespace WcfServiceLibrary1
     {
         DBConnect con = DBConnect.DB_INSTANCE;
 
-        public float GetBalance(string username)
+        public float GetBalance(int user_id)
         {
-            return con.UserBalance(username);
+            return con.UserBalance(user_id);
         }
     }
 }

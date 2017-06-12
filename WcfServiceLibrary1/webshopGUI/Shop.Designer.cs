@@ -1,4 +1,4 @@
-﻿namespace WcfServiceLibrary1
+﻿namespace webshopGUI
 {
     partial class Shop
     {
@@ -36,6 +36,7 @@
             this.eurosLabel = new System.Windows.Forms.Label();
             this.buyButton = new System.Windows.Forms.Button();
             this.refreshButton = new System.Windows.Forms.Button();
+            this.errorShop = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // inventoryLabel
@@ -64,6 +65,7 @@
             this.productsListBox.Name = "productsListBox";
             this.productsListBox.Size = new System.Drawing.Size(233, 164);
             this.productsListBox.TabIndex = 2;
+            this.productsListBox.SelectedIndexChanged += new System.EventHandler(this.productsListBox_SelectedIndexChanged);
             // 
             // productsLabel
             // 
@@ -91,6 +93,7 @@
             this.eurosLabel.Size = new System.Drawing.Size(44, 17);
             this.eurosLabel.TabIndex = 5;
             this.eurosLabel.Text = "euros";
+            this.eurosLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // buyButton
             // 
@@ -100,6 +103,7 @@
             this.buyButton.TabIndex = 6;
             this.buyButton.Text = "Buy";
             this.buyButton.UseVisualStyleBackColor = true;
+            this.buyButton.Click += new System.EventHandler(this.buyButton_Click);
             // 
             // refreshButton
             // 
@@ -109,12 +113,22 @@
             this.refreshButton.TabIndex = 7;
             this.refreshButton.Text = "Refresh";
             this.refreshButton.UseVisualStyleBackColor = true;
+            this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
+            // 
+            // errorShop
+            // 
+            this.errorShop.AutoSize = true;
+            this.errorShop.Location = new System.Drawing.Point(290, 261);
+            this.errorShop.Name = "errorShop";
+            this.errorShop.Size = new System.Drawing.Size(0, 17);
+            this.errorShop.TabIndex = 8;
             // 
             // Shop
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(616, 399);
+            this.Controls.Add(this.errorShop);
             this.Controls.Add(this.refreshButton);
             this.Controls.Add(this.buyButton);
             this.Controls.Add(this.eurosLabel);
@@ -125,6 +139,7 @@
             this.Controls.Add(this.inventoryLabel);
             this.Name = "Shop";
             this.Text = "Shop";
+            this.Load += new System.EventHandler(this.Shop_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -140,5 +155,6 @@
         private System.Windows.Forms.Label eurosLabel;
         private System.Windows.Forms.Button buyButton;
         private System.Windows.Forms.Button refreshButton;
+        private System.Windows.Forms.Label errorShop;
     }
 }

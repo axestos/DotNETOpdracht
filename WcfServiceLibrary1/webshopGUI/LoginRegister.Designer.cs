@@ -1,4 +1,4 @@
-﻿namespace WcfServiceLibrary1
+﻿namespace webshopGUI
 {
     partial class LoginRegister
     {
@@ -30,17 +30,17 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.loginTab = new System.Windows.Forms.TabPage();
-            this.registerTab = new System.Windows.Forms.TabPage();
-            this.usernameLoginLabel = new System.Windows.Forms.Label();
-            this.passwordLoginLabel = new System.Windows.Forms.Label();
-            this.usernameLoginText = new System.Windows.Forms.TextBox();
-            this.passwordLoginText = new System.Windows.Forms.TextBox();
-            this.errorMessageLogin = new System.Windows.Forms.Label();
             this.loginButton = new System.Windows.Forms.Button();
-            this.usernameRegisterLabel = new System.Windows.Forms.Label();
-            this.usernameRegisterText = new System.Windows.Forms.TextBox();
-            this.errorMessageRegister = new System.Windows.Forms.Label();
+            this.errorMessageLogin = new System.Windows.Forms.Label();
+            this.passwordLoginText = new System.Windows.Forms.TextBox();
+            this.usernameLoginText = new System.Windows.Forms.TextBox();
+            this.passwordLoginLabel = new System.Windows.Forms.Label();
+            this.usernameLoginLabel = new System.Windows.Forms.Label();
+            this.registerTab = new System.Windows.Forms.TabPage();
             this.registerButton = new System.Windows.Forms.Button();
+            this.errorMessageRegister = new System.Windows.Forms.Label();
+            this.usernameRegisterText = new System.Windows.Forms.TextBox();
+            this.usernameRegisterLabel = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.loginTab.SuspendLayout();
             this.registerTab.SuspendLayout();
@@ -72,6 +72,56 @@
             this.loginTab.Text = "Login";
             this.loginTab.UseVisualStyleBackColor = true;
             // 
+            // loginButton
+            // 
+            this.loginButton.Location = new System.Drawing.Point(196, 169);
+            this.loginButton.Name = "loginButton";
+            this.loginButton.Size = new System.Drawing.Size(75, 23);
+            this.loginButton.TabIndex = 5;
+            this.loginButton.Text = "Login";
+            this.loginButton.UseVisualStyleBackColor = true;
+            this.loginButton.Click += new System.EventHandler(this.loginButton_Click);
+            // 
+            // errorMessageLogin
+            // 
+            this.errorMessageLogin.AutoSize = true;
+            this.errorMessageLogin.Location = new System.Drawing.Point(101, 134);
+            this.errorMessageLogin.Name = "errorMessageLogin";
+            this.errorMessageLogin.Size = new System.Drawing.Size(0, 17);
+            this.errorMessageLogin.TabIndex = 4;
+            // 
+            // passwordLoginText
+            // 
+            this.passwordLoginText.Location = new System.Drawing.Point(104, 64);
+            this.passwordLoginText.Name = "passwordLoginText";
+            this.passwordLoginText.Size = new System.Drawing.Size(167, 22);
+            this.passwordLoginText.TabIndex = 3;
+            // 
+            // usernameLoginText
+            // 
+            this.usernameLoginText.Location = new System.Drawing.Point(104, 27);
+            this.usernameLoginText.Name = "usernameLoginText";
+            this.usernameLoginText.Size = new System.Drawing.Size(167, 22);
+            this.usernameLoginText.TabIndex = 2;
+            // 
+            // passwordLoginLabel
+            // 
+            this.passwordLoginLabel.AutoSize = true;
+            this.passwordLoginLabel.Location = new System.Drawing.Point(8, 64);
+            this.passwordLoginLabel.Name = "passwordLoginLabel";
+            this.passwordLoginLabel.Size = new System.Drawing.Size(69, 17);
+            this.passwordLoginLabel.TabIndex = 1;
+            this.passwordLoginLabel.Text = "Password";
+            // 
+            // usernameLoginLabel
+            // 
+            this.usernameLoginLabel.AutoSize = true;
+            this.usernameLoginLabel.Location = new System.Drawing.Point(6, 27);
+            this.usernameLoginLabel.Name = "usernameLoginLabel";
+            this.usernameLoginLabel.Size = new System.Drawing.Size(73, 17);
+            this.usernameLoginLabel.TabIndex = 0;
+            this.usernameLoginLabel.Text = "Username";
+            // 
             // registerTab
             // 
             this.registerTab.Controls.Add(this.registerButton);
@@ -86,55 +136,30 @@
             this.registerTab.Text = "Register";
             this.registerTab.UseVisualStyleBackColor = true;
             // 
-            // usernameLoginLabel
+            // registerButton
             // 
-            this.usernameLoginLabel.AutoSize = true;
-            this.usernameLoginLabel.Location = new System.Drawing.Point(6, 27);
-            this.usernameLoginLabel.Name = "usernameLoginLabel";
-            this.usernameLoginLabel.Size = new System.Drawing.Size(73, 17);
-            this.usernameLoginLabel.TabIndex = 0;
-            this.usernameLoginLabel.Text = "Username";
+            this.registerButton.Location = new System.Drawing.Point(188, 171);
+            this.registerButton.Name = "registerButton";
+            this.registerButton.Size = new System.Drawing.Size(75, 23);
+            this.registerButton.TabIndex = 3;
+            this.registerButton.Text = "Register";
+            this.registerButton.UseVisualStyleBackColor = true;
+            this.registerButton.Click += new System.EventHandler(this.registerButton_Click);
             // 
-            // passwordLoginLabel
+            // errorMessageRegister
             // 
-            this.passwordLoginLabel.AutoSize = true;
-            this.passwordLoginLabel.Location = new System.Drawing.Point(8, 64);
-            this.passwordLoginLabel.Name = "passwordLoginLabel";
-            this.passwordLoginLabel.Size = new System.Drawing.Size(69, 17);
-            this.passwordLoginLabel.TabIndex = 1;
-            this.passwordLoginLabel.Text = "Password";
+            this.errorMessageRegister.AutoSize = true;
+            this.errorMessageRegister.Location = new System.Drawing.Point(101, 135);
+            this.errorMessageRegister.Name = "errorMessageRegister";
+            this.errorMessageRegister.Size = new System.Drawing.Size(0, 17);
+            this.errorMessageRegister.TabIndex = 2;
             // 
-            // usernameLoginText
+            // usernameRegisterText
             // 
-            this.usernameLoginText.Location = new System.Drawing.Point(104, 27);
-            this.usernameLoginText.Name = "usernameLoginText";
-            this.usernameLoginText.Size = new System.Drawing.Size(167, 22);
-            this.usernameLoginText.TabIndex = 2;
-            // 
-            // passwordLoginText
-            // 
-            this.passwordLoginText.Location = new System.Drawing.Point(104, 64);
-            this.passwordLoginText.Name = "passwordLoginText";
-            this.passwordLoginText.Size = new System.Drawing.Size(167, 22);
-            this.passwordLoginText.TabIndex = 3;
-            // 
-            // errorMessageLogin
-            // 
-            this.errorMessageLogin.AutoSize = true;
-            this.errorMessageLogin.Location = new System.Drawing.Point(174, 132);
-            this.errorMessageLogin.Name = "errorMessageLogin";
-            this.errorMessageLogin.Size = new System.Drawing.Size(97, 17);
-            this.errorMessageLogin.TabIndex = 4;
-            this.errorMessageLogin.Text = "ErrorMessage";
-            // 
-            // loginButton
-            // 
-            this.loginButton.Location = new System.Drawing.Point(196, 169);
-            this.loginButton.Name = "loginButton";
-            this.loginButton.Size = new System.Drawing.Size(75, 23);
-            this.loginButton.TabIndex = 5;
-            this.loginButton.Text = "Login";
-            this.loginButton.UseVisualStyleBackColor = true;
+            this.usernameRegisterText.Location = new System.Drawing.Point(104, 27);
+            this.usernameRegisterText.Name = "usernameRegisterText";
+            this.usernameRegisterText.Size = new System.Drawing.Size(160, 22);
+            this.usernameRegisterText.TabIndex = 1;
             // 
             // usernameRegisterLabel
             // 
@@ -145,31 +170,6 @@
             this.usernameRegisterLabel.TabIndex = 0;
             this.usernameRegisterLabel.Text = "Username";
             // 
-            // usernameRegisterText
-            // 
-            this.usernameRegisterText.Location = new System.Drawing.Point(104, 27);
-            this.usernameRegisterText.Name = "usernameRegisterText";
-            this.usernameRegisterText.Size = new System.Drawing.Size(160, 22);
-            this.usernameRegisterText.TabIndex = 1;
-            // 
-            // errorMessageRegister
-            // 
-            this.errorMessageRegister.AutoSize = true;
-            this.errorMessageRegister.Location = new System.Drawing.Point(167, 135);
-            this.errorMessageRegister.Name = "errorMessageRegister";
-            this.errorMessageRegister.Size = new System.Drawing.Size(97, 17);
-            this.errorMessageRegister.TabIndex = 2;
-            this.errorMessageRegister.Text = "ErrorMessage";
-            // 
-            // registerButton
-            // 
-            this.registerButton.Location = new System.Drawing.Point(188, 171);
-            this.registerButton.Name = "registerButton";
-            this.registerButton.Size = new System.Drawing.Size(75, 23);
-            this.registerButton.TabIndex = 3;
-            this.registerButton.Text = "Register";
-            this.registerButton.UseVisualStyleBackColor = true;
-            // 
             // LoginRegister
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -178,6 +178,7 @@
             this.Controls.Add(this.tabControl1);
             this.Name = "LoginRegister";
             this.Text = "Welcome";
+            this.Load += new System.EventHandler(this.LoginRegister_Load);
             this.tabControl1.ResumeLayout(false);
             this.loginTab.ResumeLayout(false);
             this.loginTab.PerformLayout();

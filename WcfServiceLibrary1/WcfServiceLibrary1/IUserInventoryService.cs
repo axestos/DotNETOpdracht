@@ -12,6 +12,6 @@ namespace WcfServiceLibrary1
     public interface IUserInventoryService
     {
         [OperationContract]
-        IEnumerable<Item> UserInventory(string username);
+        IEnumerable<Item> UserInventory(int user_id);
     }
 }

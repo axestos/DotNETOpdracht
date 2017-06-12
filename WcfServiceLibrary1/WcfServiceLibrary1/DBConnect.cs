@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
+using System.Diagnostics;
 
 namespace WcfServiceLibrary1
 {
@@ -81,12 +82,11 @@ namespace WcfServiceLibrary1
              */
 
         //if this one is called, also call the refresh and GetUserInventoryServices to reset both fields
-        public bool BuyItem(string username, int item_id)//need testing
+        public bool BuyItem(int user_id, int item_id)//need testing
         {
-            float user_balance = UserBalance(username);
+            float user_balance = UserBalance(user_id);
             float item_price = GetItemPrice(item_id);
             int item_amount = GetItemAmountInStore(item_id);
-            int user_id = GetUserID(username);
             int inventory_id = GetInventoryID(user_id);
             bool itemInInventory = IsItemInInventory(item_id, inventory_id);
             int item_amountInventory = ItemAmountInInventory(item_id, inventory_id);
@@ -413,7 +413,7 @@ namespace WcfServiceLibrary1
 
 
             }
-            return (user == null);
+            return (user != null);
 
         }
 
@@ -422,7 +422,7 @@ namespace WcfServiceLibrary1
             MySqlCommand cmd = connection.CreateCommand();
             cmd.CommandText = "SELECT password FROM user WHERE username = @name "; // Voorkomt SQL injectie!!!!
             cmd.Parameters.AddWithValue("@name", username);
-            string db_password = null;
+            string db_password = "";
 
             if (OpenConnection())
             {
@@ -437,15 +437,14 @@ namespace WcfServiceLibrary1
 
 
             }
-
             return (db_password.Equals(password));
         }
 
-        public float UserBalance(string username)//tested
+        public float UserBalance(int id)//tested
         {
             MySqlCommand cmd = connection.CreateCommand();
-            cmd.CommandText = "SELECT balance FROM user WHERE username = @name";
-            cmd.Parameters.AddWithValue("@name", username);
+            cmd.CommandText = "SELECT balance FROM user WHERE id = @id";
+            cmd.Parameters.AddWithValue("@id", id);
             float balance = 0;
 
             if (OpenConnection())
